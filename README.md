@@ -1,5 +1,7 @@
 # 🌟 Aseni Thennakoon - Personal Portfolio
 
+🚀 **Live Website:** [https://portfolio-theta-amber-65.vercel.app/](https://portfolio-theta-amber-65.vercel.app/)
+
 Welcome to the repository for my personal portfolio! This project is a modern, highly interactive web application designed to showcase my skills, projects, and professional journey as a Software Engineer.
 
 ## ✨ Key Features
