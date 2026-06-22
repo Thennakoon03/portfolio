@@ -49,7 +49,7 @@ const projects = [
     name: 'AgroFund',
     description:
       'Full-stack agriculture platform with course learning, loan management, support tickets, and admin planning with weather integration.',
-    link: 'https://github.com/Thennakoon03',
+    link: 'https://github.com/ShewonGun/FarmerApp.git',
     tech: ['React', 'Vite', 'Node.js', 'Express', 'MongoDB'],
     contribution:
       'Contributed to the loan management system by supporting loan applications, repayments, and loan status tracking.',
