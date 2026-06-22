@@ -95,7 +95,7 @@ const skills = {
   'Languages': ['Java', 'JavaScript', 'Python', 'C', 'C++', 'Kotlin'],
   'Frontend & Mobile': ['React.js', 'React Native', 'HTML', 'CSS', 'Tailwind CSS'],
   'Backend & DBs': ['Node.js', 'Spring Boot', 'REST APIs', 'MongoDB', 'MySQL', 'Firebase'],
-  'DevOps & Core': ['Docker', 'Kubernetes', 'Git', 'OOP', 'Data Structures', 'CI/CD', 'Agile'],
+  'DevOps & Core': ['Docker', 'Kubernetes', 'Git', 'OOP', 'Data Structures', 'Agile'],
 };
 
 const techStacks = [
@@ -400,6 +400,7 @@ function AchievementCard({ item, isDark }) {
 }
 
 export default function Home() {
+  const [isPreloading, setIsPreloading] = useState(true);
   const [isDark, setIsDark] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -434,6 +435,12 @@ export default function Home() {
     const viewer = document.createElement('spline-viewer');
     viewer.setAttribute('url', 'https://prod.spline.design/LZpCxc4bCXUJ1uMC/scene.splinecode');
     viewer.style.cssText = 'width:100%;height:100%;display:block;';
+    
+    // Once Spline finishes loading its assets, fade out the preloader
+    viewer.addEventListener('load', () => {
+      setTimeout(() => setIsPreloading(false), 500);
+    });
+
     container.appendChild(viewer);
 
     // Hide the "Built with Spline" logo inside the shadow DOM
@@ -469,6 +476,14 @@ export default function Home() {
       type: isPdf ? 'pdf' : 'image',
     });
   };
+
+  // Fallback: If Spline takes too long or fails, force remove preloader after 4.5 seconds
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      setIsPreloading(false);
+    }, 4500);
+    return () => clearTimeout(fallbackTimer);
+  }, []);
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('portfolio-theme');
@@ -613,13 +628,36 @@ export default function Home() {
   };
 
   return (
-    <div
-      className={`portfolio-shell ${isDark ? 'theme-dark' : 'theme-light'}`}
-      style={{
-        '--mouse-x': `${mousePosition.x}%`,
-        '--mouse-y': `${mousePosition.y}%`,
-      }}
-    >
+    <>
+      {/* --- Preloader Overlay --- */}
+      <div 
+        className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020617] transition-all duration-[800ms] ease-in-out ${
+          isPreloading ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+        }`}
+      >
+        <div className="relative flex items-center justify-center scale-150">
+          {/* Soft Glowing Ripples */}
+          <div className="absolute w-[2.4rem] h-[2.4rem] rounded-[0.85rem] ripple-anim ripple-1" />
+          <div className="absolute w-[2.4rem] h-[2.4rem] rounded-[0.85rem] ripple-anim ripple-2" />
+          
+          {/* Logo */}
+          <div className="brand__mark relative z-10 shadow-[0_0_40px_rgba(34,211,238,0.5)]">
+            AT
+          </div>
+        </div>
+        
+        <p className="mt-14 text-[0.65rem] font-bold uppercase tracking-[0.3em] text-slate-500 animate-pulse">
+          Loading
+        </p>
+      </div>
+
+      <div
+        className={`portfolio-shell ${isDark ? 'theme-dark' : 'theme-light'}`}
+        style={{
+          '--mouse-x': `${mousePosition.x}%`,
+          '--mouse-y': `${mousePosition.y}%`,
+        }}
+      >
       <div
         className={`cursor-trail ${cursorActive ? 'cursor-trail--active' : ''}`}
         style={{
@@ -1104,5 +1142,6 @@ export default function Home() {
         </div>
       )}
     </div>
+    </>
   );
 }
